@@ -1,4 +1,7 @@
-﻿namespace MusicPlayer
+﻿using System.Drawing;//因隐藏标题栏后移动而添加
+using System.Windows.Forms;//因隐藏标题栏后移动而添加
+
+namespace MusicPlayer
 {
     partial class Form1
     {
@@ -59,6 +62,7 @@
             this.picClose.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.picClose.TabIndex = 0;
             this.picClose.TabStop = false;
+            this.picClose.Click += new System.EventHandler(this.picClose_Click);
             // 
             // picMin
             // 
@@ -70,6 +74,7 @@
             this.picMin.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.picMin.TabIndex = 1;
             this.picMin.TabStop = false;
+            this.picMin.Click += new System.EventHandler(this.picMin_Click);
             // 
             // picSet
             // 
@@ -149,10 +154,10 @@
             // MediaPlayerMy
             // 
             this.MediaPlayerMy.Enabled = true;
-            this.MediaPlayerMy.Location = new System.Drawing.Point(248, 357);
+            this.MediaPlayerMy.Location = new System.Drawing.Point(246, 533);
             this.MediaPlayerMy.Name = "MediaPlayerMy";
             this.MediaPlayerMy.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("MediaPlayerMy.OcxState")));
-            this.MediaPlayerMy.Size = new System.Drawing.Size(166, 89);
+            this.MediaPlayerMy.Size = new System.Drawing.Size(156, 96);
             this.MediaPlayerMy.TabIndex = 4;
             // 
             // Form1
@@ -186,6 +191,46 @@
 
         #endregion
 
+        #region 隐藏标题栏后移动窗口
+        ///<summary>
+        ///鼠标按下，开启移动
+        ///<summary>
+        ///<param name="e"><param>
+        protected override void OnMouseDown(MouseEventArgs e)
+        {
+            base.OnMouseDown(e);
+            m_mousePos = Cursor.Position;
+            m_isMouseDown = true;
+        }
+
+        ///<summary>
+        ///鼠标抬起，关闭移动
+        ///<summary>
+        ///<param name="e"><param>
+        protected override void OnMouseUp(MouseEventArgs e)
+        {
+            base.OnMouseUp(e);
+            m_isMouseDown = false;
+            this.Focus();
+        }
+
+        ///<summary>
+        ///移动窗口
+        ///<summary>
+        ///<param name="e"><param>
+        protected override void OnMouseMove(MouseEventArgs e)
+        {
+            base.OnMouseMove(e);
+            if (m_isMouseDown)
+            {
+                Point tempPos = Cursor.Position;
+                this.Location = new Point(Location.X + (tempPos.X - m_mousePos.X),
+                    Location.Y + (tempPos.Y - m_mousePos.Y));
+                m_mousePos = Cursor.Position;
+            }
+        }
+        #endregion
+
         private System.Windows.Forms.PictureBox picClose;
         private System.Windows.Forms.PictureBox picMin;
         private System.Windows.Forms.PictureBox picSet;
@@ -195,6 +240,8 @@
         private System.Windows.Forms.PictureBox picUp;
         private System.Windows.Forms.PictureBox picPlay;
         private AxWMPLib.AxWindowsMediaPlayer MediaPlayerMy;
+        public Point m_mousePos { get; private set; }//因隐藏标题栏后移动而添加
+        public bool m_isMouseDown { get; private set; }//因隐藏标题栏后移动而添加
     }
 }
 

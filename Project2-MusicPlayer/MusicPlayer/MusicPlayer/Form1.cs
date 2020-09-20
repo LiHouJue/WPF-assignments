@@ -25,7 +25,17 @@ namespace MusicPlayer
         private void Form1_Load(object sender, EventArgs e)
         {
             MediaPlayerMy.URL =
-                    "C:\\Users\\李侯爵\\Desktop\\桌面应用开发\\新建文件夹\\sourse\\大壮-我们不一样";
+                    "D:\\sourse_storage\\code_storage\\C#\\WinFormProgram_zuoye\\Project2-MusicPlayer\\sourse\\大壮-我们不一样.mp3";
+        }
+
+        private void picClose_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
+        }
+
+        private void picMin_Click(object sender, EventArgs e)
+        {
+            this.WindowState = FormWindowState.Minimized;
         }
     }
 }
