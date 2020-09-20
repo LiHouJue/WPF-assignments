@@ -1,0 +1,272 @@
+/////////登录
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Windows.Forms;
+using System.Data.SqlClient;
+ 
+ 
+namespace ZH_controls
+{
+    public partial class Login : Form
+    {
+        public Login()
+        {
+            InitializeComponent();
+        }
+ 
+        private void Login_Load(object sender, EventArgs e)
+        {
+ 
+        }
+ 
+        private void Login_Button_Click(object sender, EventArgs e) //单击登陆按钮
+        {
+            String username, password;
+            username = UserName.Text;
+            password = Password.Text;
+            String myconn = "Data Source=PC-20180112FRNM;Initial Catalog=属性表;User ID=sa;Password=123;Integrated Security=True";//数据库实例连接字符串
+            SqlConnection sqlConnection = new SqlConnection(myconn);//新建数据库连接实例
+            sqlConnection.Open();//打开数据库连接
+ 
+            password = Adduser.GetMD5(password);   //在同一个命名空间（在同一个文件夹中），可以访问Adduser里的GetMD5函数。 因为MD5加密算法不可逆，所以要把输入的密码加密和数据库里密码匹配。这样做以后，除了用户自己谁也不知道密码了。
+            String sql = "select UserName,Password from User_info where UserName='" + username + "'and Password='" + password + "'";//SQL语句实现表数据的读取
+            SqlCommand sqlCommand = new SqlCommand(sql, sqlConnection);
+            SqlDataReader sqlDataReader = sqlCommand.ExecuteReader();
+            if (UserName.Text == "")
+            {
+                MessageBox.Show("请输入用户名", "登陆失败");
+                UserName.Focus();
+            }
+            else if (Password.Text == "")
+            {
+                MessageBox.Show("请输入密码", "登陆失败");
+ 
+            }
+            else
+            {
+                if (sqlDataReader.HasRows)//满足用户名与密码一致，进入下一个界面
+                {
+                    //实现页面跳转
+                    Form1 form3 = new Form1();
+                    this.Hide();     //隐藏当前窗体   
+                    form3.ShowDialog();
+                    Application.ExitThread();   //退出当前窗体，这一步很重要，否则最后可能无法将所有进程关闭。最好是在跳转页面后，将之前的页面退出。
+                }
+                else//如果登录失败，询问是否注册新用户
+                {
+                    DialogResult dr = MessageBox.Show("是否注册新用户？", "登录失败", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                    if (dr == DialogResult.Yes)//打开注册界面
+                    {
+ 
+                        Adduser form2 = new Adduser();
+                        this.Hide();
+                        form2.ShowDialog();
+                        Application.ExitThread();  
+                    }
+                    else
+                    {
+                        UserName.Text = "";
+                        Password.Text = "";
+                        UserName.Focus();
+                        this.Show();
+                    }
+                }
+            }
+            sqlConnection.Close();
+        }
+ 
+        private void Register_Click(object sender, EventArgs e)     //单击注册按钮
+        {
+          
+            Adduser form2 = new Adduser();
+            this.Hide();
+            form2.ShowDialog();
+            Application.ExitThread();  
+        }
+ 
+        private void Quit_Click(object sender, EventArgs e)    //单击退出按钮
+        {
+            Application.Exit(); 
+        }
+ 
+      
+        private void UserName_KeyPress(object sender, KeyPressEventArgs e)  //功能：输入用户名后，按 Enter键，光标到输入密码的TextBox中
+        {
+            if (e.KeyChar == (char)Keys.Enter)
+            {
+                Password.Focus();     //控制光标指向哪的
+            }
+        }
+ 
+        private void Password_KeyPress(object sender, KeyPressEventArgs e)  //KeyPress事件，在控件具有焦点并且用户按下并释放某个键后发生
+        {
+            if (e.KeyChar == (char)Keys.Enter)
+            {
+               // Login_Button.Focus();
+                Login_Button_Click(sender ,e);
+            }
+        }
+       
+    }
+}
+
+/////////注册
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Windows.Forms;
+using System.Data.SqlClient;
+using System.Security.Cryptography;  //MD5密码加密  
+ 
+namespace ZH_controls
+{
+    public partial class Adduser : Form
+    {
+        public Adduser()
+        {
+            InitializeComponent();
+        }
+ 
+        private void button1_Click(object sender, EventArgs e)  //单击确定按钮
+        {
+            String username, password, repassword;
+            username = textBox1.Text;
+            password = textBox2.Text;
+            repassword = textBox3.Text;
+            if (textBox1.Text == "")
+            { 
+                MessageBox.Show("请输入用户名", "注册失败");
+                textBox1.Focus();
+            }
+            else if (textBox2.Text == "")
+            {
+                MessageBox.Show("请输入密码", "注册失败");
+                textBox2.Focus();
+            }
+            else if (textBox3.Text == "")
+                MessageBox.Show("请确认密码", "注册失败");
+            else
+            {
+                string myConn = "Data Source=PC-20180112FRNM;Initial Catalog=属性表;User ID=sa;Password=123;Integrated Security=True";
+                SqlConnection sqlConnection = new SqlConnection(myConn);    //实例化连接对象  
+                sqlConnection.Open();
+                String sql = "select UserName from User_info where UserName='" + username + "'";//SQL语句实现表数据的读取
+                SqlCommand sqlCommand = new SqlCommand(sql, sqlConnection);
+                SqlDataReader sqlDataReader = sqlCommand.ExecuteReader();
+ 
+                if (sqlDataReader.HasRows)
+                {
+                    sqlConnection.Close();
+                    MessageBox.Show("该用户名已存在，请重新注册", "注册失败");
+                    textBox1.Text = "";
+                    textBox2.Text = "";
+                    textBox3.Text = "";
+                    textBox1.Focus();     //指定光标在哪个textBox处闪烁
+                }
+                else
+                {
+                    if (password == repassword)//两次输入的密码一致  
+                    {
+                        sqlConnection.Close();
+                        string myConn2 = "Data Source=PC-20180112FRNM;Initial Catalog=属性表;User ID=sa;Password=123;Integrated Security=True";
+                        SqlConnection sqlConnection2 = new SqlConnection(myConn2);   //实例化连接对象  
+                        sqlConnection.Open();
+ 
+                        password = GetMD5(password);
+                        String sql2 = "INSERT INTO User_info(UserName,Password) VALUES('" + username + "','" + password + "')";//SQL语句向表中写入数据  
+                        SqlCommand sqlCommand2 = new SqlCommand(sql2, sqlConnection);
+                        sqlCommand2.ExecuteNonQuery();
+                        sqlConnection2.Close();
+                        DialogResult dr = MessageBox.Show("是否返回主界面", "注册成功", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                        if (dr == DialogResult.Yes)//打开注册界面
+                        {
+ 
+                            Login form2 = new Login();
+                            this.Hide();
+                            form2.ShowDialog();
+                            Application.ExitThread();
+                        }
+                        else
+                        {
+                            textBox1.Text = "";
+                            textBox2.Text = "";
+                            textBox3.Text = "";
+                            this.Show();
+                        }
+ 
+                    }
+                    else
+                    {
+                        MessageBox.Show("两次输入密码不一致", "错误信息");
+                        textBox1.Text = "";
+                        textBox2.Text = "";
+                        textBox3.Text = "";
+                    }
+                }
+            }            
+        }
+ 
+        private void button2_Click(object sender, EventArgs e) //返回登陆按钮
+        {
+            Login  form3 = new Login();
+            this.Hide();
+            form3.ShowDialog();
+            Application.ExitThread();   
+ 
+        }
+ 
+        public static string GetMD5(String input)   //MD5算法，输入一段字符串，输出一段字符串
+        {
+            string cl = input;
+            string pwd = "";
+            MD5 md5 = MD5.Create();//实例化一个md5对像
+            // 加密后是一个字节类型的数组，这里要注意编码UTF8/Unicode等的选择　
+            byte[] s = md5.ComputeHash(Encoding.UTF8.GetBytes(cl));
+            // 通过使用循环，将字节类型的数组转换为字符串，此字符串是常规字符格式化所得
+            for (int i = 0; i < s.Length; i++)
+            {
+                // 将得到的字符串使用十六进制类型格式。格式后的字符是小写的字母，如果使用大写（X）则格式后的字符是大写字符 
+ 
+                pwd = pwd + s[i].ToString("X");
+ 
+            }
+            return pwd;
+         }
+ 
+        private void textBox1_KeyPress(object sender, KeyPressEventArgs e)  
+        {
+            if (e.KeyChar == (char)Keys.Enter)
+            {
+                textBox2.Focus();
+            }
+        }
+ 
+        private void textBox2_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)Keys.Enter)
+            {
+                textBox3.Focus();
+            }
+        }
+ 
+        private void textBox3_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)Keys.Enter)
+            {
+                button1_Click(null, null);
+            }
+        }
+ 
+      
+     
+    }
+}
