@@ -1,0 +1,50 @@
+  this.WindowState = FormWindowState.Minimized;
+ 
+ Application.Exit();
+ 
+ System.Diagnostics.Process.Start("explorer.exe",
+                "http://www.baidu.com");
+				
+using System.Drawing;//因隐藏标题栏后移动而添加
+using System.Windows.Forms;//因隐藏标题栏后移动而添加
+#region 隐藏标题栏后移动窗口
+        ///<summary>
+        ///鼠标按下，开启移动
+        ///<summary>
+        ///<param name="e"><param>
+        protected override void OnMouseDown(MouseEventArgs e)
+        {
+            base.OnMouseDown(e);
+            m_mousePos = Cursor.Position;
+            m_isMouseDown = true;
+        }
+
+        ///<summary>
+        ///鼠标抬起，关闭移动
+        ///<summary>
+        ///<param name="e"><param>
+        protected override void OnMouseUp(MouseEventArgs e)
+        {
+            base.OnMouseUp(e);
+            m_isMouseDown = false;
+            this.Focus();
+        }
+
+        ///<summary>
+        ///移动窗口
+        ///<summary>
+        ///<param name="e"><param>
+        protected override void OnMouseMove(MouseEventArgs e)
+        {
+            base.OnMouseMove(e);
+            if (m_isMouseDown)
+            {
+                Point tempPos = Cursor.Position;
+                this.Location = new Point(Location.X + (tempPos.X - m_mousePos.X),
+                    Location.Y + (tempPos.Y - m_mousePos.Y));
+                m_mousePos = Cursor.Position;
+            }
+        }
+        #endregion
+public Point m_mousePos { get; private set; }//因隐藏标题栏后移动而添加
+public bool m_isMouseDown { get; private set; }//因隐藏标题栏后移动而添加
