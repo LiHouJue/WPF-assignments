@@ -8,20 +8,25 @@
     ".NETCoreApp,Version=v3.1": []
   },
   "packageFolders": {
-    "C:\\Users\\李侯爵\\.nuget\\packages\\": {}
+    "C:\\Users\\李侯爵\\.nuget\\packages\\": {},
+    "D:\\Microsoft\\Xamarin\\NuGet\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\李侯爵\\Desktop\\桌面应用开发\\Project1-QQ\\WindowsFormsApp1\\WindowsFormsApp1\\WindowsFormsApp1.csproj",
+      "projectUniqueName": "D:\\sourse_storage\\code_storage\\C#\\WinFormProgram_zuoye\\Project1-QQlogin\\WindowsFormsApp1\\WindowsFormsApp1\\WindowsFormsApp1.csproj",
       "projectName": "WindowsFormsApp1",
-      "projectPath": "C:\\Users\\李侯爵\\Desktop\\桌面应用开发\\Project1-QQ\\WindowsFormsApp1\\WindowsFormsApp1\\WindowsFormsApp1.csproj",
+      "projectPath": "D:\\sourse_storage\\code_storage\\C#\\WinFormProgram_zuoye\\Project1-QQlogin\\WindowsFormsApp1\\WindowsFormsApp1\\WindowsFormsApp1.csproj",
       "packagesPath": "C:\\Users\\李侯爵\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\李侯爵\\Desktop\\桌面应用开发\\Project1-QQ\\WindowsFormsApp1\\WindowsFormsApp1\\obj\\",
+      "outputPath": "D:\\sourse_storage\\code_storage\\C#\\WinFormProgram_zuoye\\Project1-QQlogin\\WindowsFormsApp1\\WindowsFormsApp1\\obj\\",
       "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "D:\\Microsoft\\Xamarin\\NuGet\\"
+      ],
       "configFilePaths": [
         "C:\\Users\\李侯爵\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
       ],
       "originalTargetFrameworks": [
         "netcoreapp3.1"
@@ -61,7 +66,7 @@
             "privateAssets": "none"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.401\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.403\\RuntimeIdentifierGraph.json"
       }
     }
   }
